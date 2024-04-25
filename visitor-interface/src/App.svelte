@@ -18,23 +18,40 @@
 		ready = true;
 	});
 
-	async function generateOne() {
+	// async function generateOne() {
+	// 	let walletInfo = {};
+	// 	resultOfCreateRandom = ethers.Wallet.createRandom();
+
+	// 	const walletFromChainCode = new ethers.Wallet(
+	// 		resultOfCreateRandom.chainCode,
+	// 	);
+
+	// 	walletInfo.address = walletFromChainCode.address;
+	// 	walletInfo.privateKey = walletFromChainCode.privateKey;
+	// 	walletInfo.mnemonic = resultOfCreateRandom.mnemonic.phrase;
+	// 	walletInfo.canvasIDAddress = `canvasAddress${counter}`;
+	// 	walletInfo.canvasIDPrivateKey = "canvasPrivateKey" + counter;
+
+	// 	return walletInfo;
+	// }
+
+	function generateOne() {
 		let walletInfo = {};
-		resultOfCreateRandom = ethers.Wallet.createRandom();
-
-		const walletFromChainCode = new ethers.Wallet(
-			resultOfCreateRandom.chainCode,
-		);
-
-		walletInfo.address = walletFromChainCode.address;
-		walletInfo.privateKey = walletFromChainCode.privateKey;
+		const resultOfCreateRandom = ethers.Wallet.createRandom();
+		const checker = ethers.Wallet.fromPhrase(resultOfCreateRandom.mnemonic.phrase);
+        // this.logger.warning(checker)
+		walletInfo.address = resultOfCreateRandom.address;
+		walletInfo.privateKey = resultOfCreateRandom.privateKey;
 		walletInfo.mnemonic = resultOfCreateRandom.mnemonic.phrase;
 		walletInfo.canvasIDAddress = `canvasAddress${counter}`;
 		walletInfo.canvasIDPrivateKey = "canvasPrivateKey" + counter;
 
+        if (walletInfo.address !== checker.address) throw new Error("what")
+        if (walletInfo.privateKey !== checker.privateKey) throw new Error("the")
+        if (walletInfo.mnemonic !== checker.mnemonic.phrase) throw new Error("fuck")
 		return walletInfo;
 	}
-
+	
 	function prepareQRCodes(data) {
 		for (const walletInfo of data) {
 			QRCode.toCanvas(
@@ -148,12 +165,12 @@
 						{wiForList.address} <br />
 					{/each}
 					<p><br /></p>
-					<!-- Generated Secrets:
+					Generated Secrets:
 					<p />
 					{#each walletInfos as wiForList}
 						{wiForList.mnemonic} <br />
 						{wiForList.privateKey} <br />
-					{/each} -->
+					{/each}
 				{/if}
 				<p><br /></p>
 			</div>
